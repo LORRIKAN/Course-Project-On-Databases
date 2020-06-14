@@ -5,7 +5,6 @@ using LogisticsCenter.Views.MessageService;
 using LogisticsCenter.Views.Table;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace LogisticsCenter.Presenters.Table
 {
@@ -23,7 +22,7 @@ namespace LogisticsCenter.Presenters.Table
         protected override void SetEvents()
         {
             base.SetEvents();
-            TableForm.ConfirmOrdersButtClick += (orders) => 
+            TableForm.ConfirmOrdersButtClick += (orders) =>
             {
                 TableForm_ConfirmOrdersButtClick(orders);
                 EnableFormsButts();

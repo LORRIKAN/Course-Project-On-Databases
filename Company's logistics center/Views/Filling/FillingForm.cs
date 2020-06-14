@@ -1,7 +1,6 @@
 ﻿using LogisticsCenter.Model;
 using LogisticsCenter.Views.MessageService;
 using System;
-using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace LogisticsCenter.Views.Filling

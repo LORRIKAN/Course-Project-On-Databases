@@ -48,9 +48,12 @@ namespace LogisticsCenter
                     if (LoginAttemptResult == LoginResults.Success)
                         User = new User(Context, obj.Item2);
                 }
-                catch (Exception e) { MessageService.
-                    ShowError(e.Message + " Программа не может продолжать свою работу.");
-                    Environment.Exit(0); }
+                catch (Exception e)
+                {
+                    MessageService.
+  ShowError(e.Message + " Программа не может продолжать свою работу.");
+                    Environment.Exit(0);
+                }
             };
 
             MainFormPresenter = mainFormPresenter;

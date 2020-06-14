@@ -156,7 +156,7 @@ namespace LogisticsCenter.Presenters.Table
 
         private void SaveChanges()
         {
-            try 
+            try
             {
                 if (Context.ChangeTracker.HasChanges())
                 {
@@ -202,7 +202,7 @@ namespace LogisticsCenter.Presenters.Table
                 SetOfEntities.Update(LastModifiedEntity);
             }
 
-                TableForm.DataSource = ListOfEntities;
+            TableForm.DataSource = ListOfEntities;
         }
     }
 }

@@ -36,10 +36,10 @@ namespace LogisticsCenter.Presenters.Filling
             FillingForm = fillingForm;
             FillingForm.CheckProperty += FillingForm_CheckProperty;
             FillingForm.CheckModel += FillingForm_CheckModel;
-            FillingForm.SuccessfullyFilled += (model) => 
-            { 
-                ModelClone.DeepCloneTo(Model); 
-                FillingCompleted.Invoke(FillType); 
+            FillingForm.SuccessfullyFilled += (model) =>
+            {
+                ModelClone.DeepCloneTo(Model);
+                FillingCompleted.Invoke(FillType);
             };
             FillingForm.FormClosure += () => PresenterClosure.Invoke();
         }
@@ -66,7 +66,7 @@ namespace LogisticsCenter.Presenters.Filling
                 if (attrib != null)
                 {
                     bool isReadOnlyFromRights = !user.RightsForEntitiesAndFields
-                        .Any(a => a.EntityType == model.GetType().BaseType 
+                        .Any(a => a.EntityType == model.GetType().BaseType
                         && a.Fields.Any(f => f.FieldProperty.Name == prop.Name && f.Updatable));
                     FieldInfo isReadOnly = attrib.GetType().GetField("isReadOnly", BindingFlags.NonPublic | BindingFlags.Instance);
                     isReadOnly.SetValue(attrib, isReadOnlyFromRights);

@@ -34,9 +34,12 @@ namespace LogisticsCenter.Model.ProgramModels
                         .DisplayName == entityStr)
                         .ClrType;
                 }
-                catch { throw new Exception($"Таблицы '{entityStr}' нет в списке таблиц. " +
-                    $"Это могло возникнуть из-за неверного заполнения списка прав специальности или из-за " +
-                    $"модификации базы данных вне программы."); }
+                catch
+                {
+                    throw new Exception($"Таблицы '{entityStr}' нет в списке таблиц. " +
+                $"Это могло возникнуть из-за неверного заполнения списка прав специальности или из-за " +
+                $"модификации базы данных вне программы.");
+                }
 
                 right = right.Remove(0, entityStr.Length + 2); // 2 из-за двоеточия и пробела
 
@@ -58,9 +61,12 @@ namespace LogisticsCenter.Model.ProgramModels
                                             && d.DisplayName == fieldStr)
                                          select e).Single();
                     }
-                    catch (Exception) { throw new Exception($"Столбца '{fieldStr}' нет в таблице '{entityStr}'. " +
-                        $"Это могло возникнуть из-за неверного заполнения списка прав специальности или из-за " +
-                        $"модификации базы данных вне программы."); }
+                    catch (Exception)
+                    {
+                        throw new Exception($"Столбца '{fieldStr}' нет в таблице '{entityStr}'. " +
+        $"Это могло возникнуть из-за неверного заполнения списка прав специальности или из-за " +
+        $"модификации базы данных вне программы.");
+                    }
                     fields.Add(new Field(fieldProperty, updatable));
                 }
 

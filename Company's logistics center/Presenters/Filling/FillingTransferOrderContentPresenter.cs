@@ -1,10 +1,7 @@
-﻿using LogisticsCenter.Model;
-using LogisticsCenter.Model.DbModels;
-using LogisticsCenter.Model.ProgramModels;
+﻿using LogisticsCenter.Model.DbModels;
 using LogisticsCenter.Repository;
 using LogisticsCenter.Views.Filling;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 
 namespace LogisticsCenter.Presenters.Filling
