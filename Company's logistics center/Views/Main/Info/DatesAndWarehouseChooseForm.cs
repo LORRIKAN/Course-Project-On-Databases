@@ -51,9 +51,9 @@ namespace LogisticsCenter.Views.Main.Info
 
             var startDate = startDatePicker.Value;
             var endDate = endDatePicker.Value;
-            if (startDate >= endDate)
+            if (startDate > endDate)
             {
-                MessageService.ShowError("Начальная дата не может быть той же или позднее конечной.");
+                MessageService.ShowError("Начальная дата не может быть позднее конечной.");
                 return;
             }
 
