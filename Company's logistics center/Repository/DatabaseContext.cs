@@ -83,7 +83,7 @@ namespace LogisticsCenter.Repository
                 var transferRoute = order.TransferRoute;
                 var sendingDate = order.SendingDate;
                 var receivingDate = order.ReceivingDate;
-                var transitWarehouse = order.TransferRoute.TransitWarehouse;
+                var transitWarehouse = transferRoute.TransitWarehouse;
 
                 if (status == OrderStatuses.AwaitingSendingDate && DateTime.Now >= sendingDate)
                     status = OrderStatuses.AwaitingToBeSent;

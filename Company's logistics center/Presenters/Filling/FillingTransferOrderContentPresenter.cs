@@ -44,7 +44,8 @@ namespace LogisticsCenter.Presenters.Filling
 
                     try
                     {
-                        var statStock = Context.StationaryStocks.Single(ss => ss.WarehouseID == initialWarehouse.WarehouseID);
+                        var statStock = Context.StationaryStocks.Single(ss => ss.WarehouseID == initialWarehouse.WarehouseID
+                                            && ss.ResourceID == orderContent.ResourceID);
                         if (orderContent.ResourceAmount != default)
                         {
                             var stockResAmount = statStock.ResourceAmount;
@@ -54,7 +55,8 @@ namespace LogisticsCenter.Presenters.Filling
                                 .Where(to => (to.Status == OrderStatuses.AwaitingSendingDate
                                 || to.Status == OrderStatuses.AwaitingToBeSent)
                                 && to.TransferRoute.InitialWarehouseID == initialWarehouse.WarehouseID
-                                && to.OrderContent.Any(oc => oc.ResourceID == orderContent.ResourceID))
+                                && to.OrderContent.Any(oc => oc.ResourceID == orderContent.ResourceID
+                                && oc.TransferOrderID == to.OrderID)).Select(to => to.OrderContent)
                                 .AsNoTracking().ToList();
 
                             var transferOrdersWithThisFinalWarehouse = Context.TransferOrders
@@ -62,16 +64,19 @@ namespace LogisticsCenter.Presenters.Filling
                                 || to.Status == OrderStatuses.AwaitingToBeReceived)
                                 && to.ReceivingDate <= sendingDate
                                 && to.TransferRoute.FinalWarehouseID == initialWarehouse.WarehouseID
-                                && to.OrderContent.Any(oc => oc.ResourceID == orderContent.ResourceID))
+                                && to.OrderContent.Any(oc => oc.ResourceID == orderContent.ResourceID
+                                && oc.TransferOrderID == to.OrderID)).Select(to => to.OrderContent)
                                 .AsNoTracking().ToList();
 
                             foreach (var order in transferOrdersWithThisInitialWarehouse)
-                                stockResAmount -= order.OrderContent
+                                stockResAmount -= order
                                     .Single(oc => oc.ResourceID == orderContent.ResourceID).ResourceAmount;
 
                             foreach (var order in transferOrdersWithThisFinalWarehouse)
-                                stockResAmount += order.OrderContent
+                                stockResAmount += order
                                     .Single(oc => oc.ResourceID == orderContent.ResourceID).ResourceAmount;
+
+                            stockResAmount -= orderContent.ResourceAmount;
 
                             if (stockResAmount < 0)
                                 return "На складе не хватает этого ресурса.";
