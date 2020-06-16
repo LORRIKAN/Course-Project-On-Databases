@@ -72,7 +72,7 @@ namespace LogisticsCenter.Presenters.Main.Info
                                   to.OrderID,
                                   to.Status
                               }).AsNoTracking().ToList();
-            ShowingForm.Show(DataSource, $"Ожидаемые поступления на склад ID {warehouseID}");
+            ShowingForm.Show(DataSource, $"Ожидаемые поступления на склад ID: {warehouseID}");
             ShowingForm.DataGridView.Columns[0].HeaderText = "ID стационарного склада";
             ShowingForm.DataGridView.Columns[1].HeaderText = "ID ресурса";
             ShowingForm.DataGridView.Columns[2].HeaderText = "Количество ресурса";
@@ -98,7 +98,7 @@ namespace LogisticsCenter.Presenters.Main.Info
                                   to.OrderID,
                                   to.Status
                               }).AsNoTracking().ToList();
-            ShowingForm.Show(DataSource, $"Ожидаемые отгрузки со склада ID {warehouseID}");
+            ShowingForm.Show(DataSource, $"Ожидаемые отгрузки со склада ID: {warehouseID}");
             ShowingForm.DataGridView.Columns[0].HeaderText = "ID стационарного склада";
             ShowingForm.DataGridView.Columns[1].HeaderText = "ID ресурса";
             ShowingForm.DataGridView.Columns[2].HeaderText = "Количество ресурса";
