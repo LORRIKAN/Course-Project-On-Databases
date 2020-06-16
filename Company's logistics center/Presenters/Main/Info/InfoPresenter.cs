@@ -15,11 +15,7 @@ namespace LogisticsCenter.Presenters.Main.Info
 
         DatabaseContext Context { get; set; }
 
-        string WarehouseID { get; set; }
-
-        DateTime StartDate { get; set; }
-
-        DateTime EndDate { get; set; }
+        InfoType InfoType { get; set; }
 
         public InfoPresenter(IDatesAndWarehouseChooseForm datesAndWarehouseChooseForm, IShowingForm showingForm,
             DatabaseContext databaseContext)
@@ -29,28 +25,26 @@ namespace LogisticsCenter.Presenters.Main.Info
                 .Select(sw => sw.WarehouseID).ToList();
             DatesAndWarehouseChooseForm.SendConfirmedData += (warehouseID, startDate, endDate) =>
             {
-                WarehouseID = warehouseID;
-                StartDate = startDate;
-                EndDate = endDate;
+                if (InfoType == InfoType.AwaitingReceivings)
+                    SetAwaitingReceivings(warehouseID, startDate, endDate);
+                else
+                    SetAwatingSendings(warehouseID, startDate, endDate);
             };
 
             ShowingForm = showingForm;
             Context = databaseContext;
         }
 
-        public void Run(InfoType runType)
+        public void Run(InfoType infoType)
         {
-            switch (runType)
+            InfoType = infoType;
+            switch (infoType)
             {
                 case InfoType.AwaitingReceivings:
                     DatesAndWarehouseChooseForm.Show();
-                    if (DatesAndWarehouseChooseForm.DataReceived)
-                        SetAwaitingReceivings();
                     break;
                 case InfoType.AwaitingSendings:
                     DatesAndWarehouseChooseForm.Show();
-                    if (DatesAndWarehouseChooseForm.DataReceived)
-                        SetAwatingSendings();
                     break;
                 case InfoType.ResourcesInTransit:
                     SetResourcesInTransit();
@@ -61,14 +55,14 @@ namespace LogisticsCenter.Presenters.Main.Info
             }
         }
 
-        private void SetAwaitingReceivings()
+        private void SetAwaitingReceivings(string warehouseID, DateTime startDate, DateTime endDate)
         {
             var DataSource = (from ws in Context.StationaryWarehouses
                               join tr in Context.TransferRoutes on ws.WarehouseID equals tr.FinalWarehouseID
                               join to in Context.TransferOrders on tr.RouteID equals to.TransferRouteID
                               join oc in Context.TransferOrderContents on to.OrderID equals oc.TransferOrderID
-                              where StartDate <= to.ReceivingDate && to.ReceivingDate <= EndDate && (to.Status == OrderStatuses.InTransit
-                               || to.Status == OrderStatuses.AwaitingToBeReceived) && ws.WarehouseID == WarehouseID
+                              where startDate <= to.ReceivingDate && to.ReceivingDate <= endDate && (to.Status == OrderStatuses.InTransit
+                               || to.Status == OrderStatuses.AwaitingToBeReceived) && ws.WarehouseID == warehouseID
                               orderby ws.WarehouseID
                               select new
                               {
@@ -78,7 +72,7 @@ namespace LogisticsCenter.Presenters.Main.Info
                                   to.OrderID,
                                   to.Status
                               }).AsNoTracking().ToList();
-            ShowingForm.Show(DataSource, $"Ожидаемые поступления на склад ID {WarehouseID}");
+            ShowingForm.Show(DataSource, $"Ожидаемые поступления на склад ID {warehouseID}");
             ShowingForm.DataGridView.Columns[0].HeaderText = "ID стационарного склада";
             ShowingForm.DataGridView.Columns[1].HeaderText = "ID ресурса";
             ShowingForm.DataGridView.Columns[2].HeaderText = "Количество ресурса";
@@ -87,14 +81,14 @@ namespace LogisticsCenter.Presenters.Main.Info
 
         }
 
-        private void SetAwatingSendings()
+        private void SetAwatingSendings(string warehouseID, DateTime startDate, DateTime endDate)
         {
             var DataSource = (from ws in Context.StationaryWarehouses
                               join tr in Context.TransferRoutes on ws.WarehouseID equals tr.InitialWarehouseID
                               join to in Context.TransferOrders on tr.RouteID equals to.TransferRouteID
                               join oc in Context.TransferOrderContents on to.OrderID equals oc.TransferOrderID
-                              where StartDate <= to.SendingDate && to.SendingDate <= EndDate && (to.Status == OrderStatuses.AwaitingToBeSent
-                              || to.Status == OrderStatuses.AwaitingSendingDate) && ws.WarehouseID == WarehouseID
+                              where startDate <= to.SendingDate && to.SendingDate <= endDate && (to.Status == OrderStatuses.AwaitingToBeSent
+                              || to.Status == OrderStatuses.AwaitingSendingDate) && ws.WarehouseID == warehouseID
                               orderby ws.WarehouseID
                               select new
                               {
@@ -104,7 +98,7 @@ namespace LogisticsCenter.Presenters.Main.Info
                                   to.OrderID,
                                   to.Status
                               }).AsNoTracking().ToList();
-            ShowingForm.Show(DataSource, $"Ожидаемые отгрузки со склада ID {WarehouseID}");
+            ShowingForm.Show(DataSource, $"Ожидаемые отгрузки со склада ID {warehouseID}");
             ShowingForm.DataGridView.Columns[0].HeaderText = "ID стационарного склада";
             ShowingForm.DataGridView.Columns[1].HeaderText = "ID ресурса";
             ShowingForm.DataGridView.Columns[2].HeaderText = "Количество ресурса";

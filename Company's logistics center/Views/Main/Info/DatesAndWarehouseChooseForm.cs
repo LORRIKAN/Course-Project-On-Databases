@@ -57,13 +57,10 @@ namespace LogisticsCenter.Views.Main.Info
                 return;
             }
 
-            DataReceived = true;
-
             SendConfirmedData.Invoke(warehouseID, startDate, endDate);
         }
 
         List<string> WarehousesIDs { get; set; }
-        public bool DataReceived { get; set; } = false;
 
         public event SendData SendConfirmedData;
 

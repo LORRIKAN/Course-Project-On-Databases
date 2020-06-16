@@ -10,8 +10,6 @@ namespace LogisticsCenter.Views.Main.Info
 
         event SendData SendConfirmedData;
 
-        bool DataReceived { get; set; }
-
         void Show();
     }
 }
