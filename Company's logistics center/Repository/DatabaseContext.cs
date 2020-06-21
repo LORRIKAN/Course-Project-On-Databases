@@ -45,23 +45,13 @@ namespace LogisticsCenter.Repository
             }
         }
 
-        public bool CheckIfEntityHasChanges<T>() where T : class, IModel
-        {
-            return ChangeTracker.Entries<T>().Any(e => e.State == EntityState.Modified
-            || e.State == EntityState.Added || e.State == EntityState.Deleted);
-        }
-
-        public void TrySave(bool abortLastChangeifFailed = true)
+        public void TrySave()
         {
             using (var transaction = Database.BeginTransaction())
             {
                 try { SaveChanges(false); }
                 catch (Exception e)
                 {
-                    if (abortLastChangeifFailed)
-                    {
-                        ChangeTracker.Entries().Last().State = EntityState.Detached;
-                    }
                     throw e;
                 }
                 finally { transaction.Rollback(); }
@@ -71,7 +61,7 @@ namespace LogisticsCenter.Repository
         public void UpdateDb()
         {
             UpdateTransferOrdersStatuses();
-            SaveChanges();
+                SaveChanges();
         }
 
         private void UpdateTransferOrdersStatuses()

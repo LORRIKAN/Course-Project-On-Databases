@@ -112,7 +112,7 @@ namespace LogisticsCenter.Presenters.Main.Info
                               join tr in Context.TransferRoutes on tw.WarehouseID equals tr.TransitWarehouseID
                               join to in Context.TransferOrders on tr.RouteID equals to.TransferRouteID
                               join oc in Context.TransferOrderContents on to.OrderID equals oc.TransferOrderID
-                              where tw.Status == TransitWarehouseStatuses.Busy
+                              where to.Status == OrderStatuses.InTransit
                               orderby tw.WarehouseID
                               select new
                               {

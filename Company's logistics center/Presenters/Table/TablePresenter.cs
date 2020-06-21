@@ -66,15 +66,19 @@ namespace LogisticsCenter.Presenters.Table
 
             TableForm.GetSource += () =>
             {
-                if (Context.CheckIfEntityHasChanges<TEntity>())
+                try
                 {
-                    if (MessageService.ShowOkCancel("Вы действительно хотите сбросить таблицу? Все внесённые вами " +
-                        "изменения в этой и других таблицах будут утеряны."))
+                    if (Context.ChangeTracker.HasChanges())
+                    {
+                        if (MessageService.ShowOkCancel("Вы действительно хотите сбросить таблицу? Все внесённые вами " +
+                            "изменения в этой и других таблицах будут утеряны."))
+                            UpdateFormDataSourceFromDatabase();
+                    }
+                    else
                         UpdateFormDataSourceFromDatabase();
+                    EnableFormsButts();
                 }
-                else
-                    UpdateFormDataSourceFromDatabase();
-                EnableFormsButts();
+                catch { }
             };
 
             TableForm.Save += () => { SaveChanges(); EnableFormsButts(); };
@@ -102,7 +106,7 @@ namespace LogisticsCenter.Presenters.Table
 
         private void TableForm_FormClosing(FormClosingEventArgs e)
         {
-            if (Context.CheckIfEntityHasChanges<TEntity>())//|| List открытых форм не пустой
+            if (Context.ChangeTracker.HasChanges())
                 if (!MessageService.ShowOkCancel("Вы действительно хотите выйти? Все несохранённые изменения " +
                     "будут утеряны, а открытые формы закрыты."))
                 {
@@ -127,10 +131,8 @@ namespace LogisticsCenter.Presenters.Table
 
         private void UpdateFormDataSourceFromDatabase()
         {
-            Context.UpdateDb();
             ListOfEntities = SetOfEntities.ToList();
             TableForm.DataSource = ListOfEntities;
-            Context.ChangeTracker.AcceptAllChanges();
         }
 
         protected virtual void DeleteRecords(List<TEntity> itemsToDelete)
@@ -156,9 +158,15 @@ namespace LogisticsCenter.Presenters.Table
 
         private void SaveChanges()
         {
+            bool hasChanges = false;
             try
             {
-                if (Context.ChangeTracker.HasChanges())
+                hasChanges = Context.ChangeTracker.HasChanges();
+            }
+            catch { }
+            try
+            {
+                if (hasChanges)
                 {
                     if (MessageService.ShowOkCancel("Внимание! Это действие приведёт к попытке сохранения изменений " +
                         "во всех открытых таблицах! Вы уверены, что хотите продолжить?"))
@@ -168,8 +176,14 @@ namespace LogisticsCenter.Presenters.Table
                         MessageService.ShowMessage("Данные успешно сохранены.");
                     }
                 }
+                else
+                {
+                    Context.SaveChanges();
+                    UpdateFormDataSourceFromDatabase();
+                    MessageService.ShowMessage("Данные успешно сохранены.");
+                }
             }
-            catch
+            catch (Exception e)
             {
                 MessageService.ShowError("Данные не были сохранены. Попробуйте найти и изменить неверные данные.");
             }
