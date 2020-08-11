@@ -179,7 +179,7 @@ namespace LogisticsCenter.Views.Table
             this.ClientSize = new System.Drawing.Size(1351, 632);
             this.Controls.Add(this.tableLayoutPanel);
             this.Controls.Add(this.dataGridView);
-            this.Icon = new Icon("tableIco.ico");
+            this.Icon = new Icon(@"..\..\Resources\tableIco.ico");
             this.Name = "TableForm";
             this.Text = "Название таблицы";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
