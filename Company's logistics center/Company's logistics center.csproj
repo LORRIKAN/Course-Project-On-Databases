@@ -329,6 +329,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\calendarIcon.ico" />
+    <Content Include="Resources\fillingIcon.ico" />
+    <Content Include="Resources\infoIcon.ico" />
+    <Content Include="Resources\SearchIcon.ico" />
+    <Content Include="Resources\tableIco.ico" />
+    <Content Include="Resources\tablesListIco.ico" />
+    <Content Include="Resources\updatePicture.ico" />
     <None Include="Resources\savePicture.png" />
     <None Include="Resources\deletePicture.png" />
     <None Include="Resources\confirmOrderPicture.png" />
